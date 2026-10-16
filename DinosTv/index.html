@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GameShare — Compartilhe sua tela</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#141c31;--panel2:#1b2742;--text:#eef3ff;--muted:#a7b4d0;--accent:#7c5cff;--accent2:#27d8a0;--border:#2b3857}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1c2850 0,#0b1020 55%);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+header{padding:30px 20px 18px;text-align:center}header .logo{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#b9adff;font-weight:800}h1{margin:8px 0;font-size:clamp(28px,5vw,42px);line-height:1.1}header p{margin:10px auto;color:var(--muted);max-width:680px}
+main{width:min(1050px,calc(100% - 28px));margin:0 auto 50px;display:grid;grid-template-columns:330px 1fr;gap:18px}
+.card{background:rgba(20,28,49,.94);border:1px solid var(--border);border-radius:18px;padding:20px;box-shadow:0 18px 50px #0003}.card h2{font-size:18px;margin:0 0 12px}.step{display:flex;gap:12px;margin:15px 0}.num{flex:0 0 28px;height:28px;border-radius:9px;background:#30265e;color:#c9c0ff;display:grid;place-items:center;font-weight:800}.step p{margin:0;color:var(--muted);font-size:14px}.step strong{color:var(--text)}
+label{display:block;font-size:13px;color:var(--muted);margin:13px 0 6px}input{width:100%;background:#0c1326;border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--text);font:inherit;outline:none}input:focus{border-color:var(--accent)}
+button{border:0;border-radius:10px;padding:11px 14px;font:700 14px system-ui;cursor:pointer;transition:.15s}button:hover{filter:brightness(1.1);transform:translateY(-1px)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}.primary{background:var(--accent);color:white;width:100%;margin-top:10px}.secondary{background:#263452;color:var(--text);border:1px solid #3b4b70}.danger{background:#542d42;color:#ffd9e6}.row{display:flex;gap:8px}.row button{flex:1}.status{padding:10px 12px;border-radius:10px;background:#0c1326;border:1px solid var(--border);font-size:13px;color:var(--muted);margin-top:14px;overflow-wrap:anywhere}.status::before{content:"●";color:var(--accent2);margin-right:8px}.status.warn::before{color:#ffbd59}.code{font-size:24px;font-weight:800;letter-spacing:.06em;color:#b9adff;overflow-wrap:anywhere}.muted{color:var(--muted);font-size:13px}.stage{min-height:390px;background:#080c16;border:1px solid var(--border);border-radius:14px;display:grid;place-items:center;overflow:hidden;position:relative}.stage video{width:100%;height:100%;max-height:65vh;object-fit:contain;background:#05070c}.placeholder{text-align:center;padding:35px;color:var(--muted)}.placeholder .symbol{font-size:46px;margin-bottom:8px}.video-label{position:absolute;top:12px;left:12px;background:#0009;padding:5px 9px;border-radius:8px;font-size:12px;z-index:1}.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.toolbar button{flex:1}.tag{display:inline-block;border:1px solid var(--border);border-radius:99px;padding:3px 8px;color:#c6d1ec;font-size:11px;margin-left:5px}
+.notice{border-left:3px solid #ffbd59;background:#2a2419;padding:11px 13px;border-radius:0 10px 10px 0;font-size:13px;color:#f3ddb0;margin-top:15px}.good{border-left-color:var(--accent2);background:#102923;color:#b8f6df}
+footer{text-align:center;color:#71809f;font-size:12px;padding:0 20px 30px}
+@media(max-width:760px){main{grid-template-columns:1fr}.stage{min-height:250px}.card{padding:16px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">● GameShare <span class="tag">BETA</span></div>
+  <h1>Jogue. Compartilhe. Fique junto.</h1>
+  <p>Compartilhamento de tela com seus amigos, com áudio transmitido junto quando o navegador e a fonte escolhida permitem.</p>
+</header>
+<main>
+  <section class="card">
+    <h2>Conectar com amigos</h2>
+    <div class="step"><div class="num">1</div><p><strong>Uma pessoa cria a sala</strong><br>Ela compartilha a tela e envia o código aos amigos.</p></div>
+    <div class="step"><div class="num">2</div><p><strong>Os amigos entram</strong><br>Colam o código do anfitrião e clicam em conectar.</p></div>
+    <div class="step"><div class="num">3</div><p><strong>Escolha o áudio</strong><br>No Chrome/Edge, compartilhar uma aba costuma ser a melhor opção para transmitir o áudio daquela aba.</p></div>
+    <div class="notice">Importante: uma página HTML não consegue selecionar de forma confiável o áudio de um jogo específico do Windows. Ao compartilhar uma janela/monitor, o áudio disponível depende do navegador e do sistema — pode ser áudio geral do sistema ou nenhum áudio. Para capturar somente o áudio de um jogo desktop, normalmente é necessário um aplicativo nativo ou roteamento de áudio.</div>
+    <label for="hostId">Código do anfitrião</label>
+    <input id="hostId" placeholder="Cole aqui o código do amigo">
+    <div class="row">
+      <button class="primary" id="joinBtn">Conectar à sala</button>
+      <button class="secondary" id="copyBtn" disabled>Copiar meu código</button>
+    </div>
+    <button class="secondary" id="startBtn" style="width:100%;margin-top:10px">Criar sala e compartilhar tela</button>
+    <div class="status" id="status">Pronto para conectar. É necessário estar online.</div>
+    <div style="margin-top:15px"><div class="muted">Seu código de sala</div><div class="code" id="myId">Ainda não criado</div></div>
+    <div class="notice good">Dica: se estiver transmitindo um jogo de navegador, selecione a aba do jogo e marque “Compartilhar áudio da aba”. Use Chrome ou Edge atualizado.</div>
+  </section>
+  <section class="card">
+    <h2>Prévia da transmissão <span class="tag" id="liveTag">OFFLINE</span></h2>
+    <div class="stage" id="stage">
+      <div class="placeholder" id="placeholder"><div class="symbol">▣</div><strong>Sua tela aparecerá aqui</strong><br><span class="muted">Crie uma sala ou entre na sala de um amigo.</span></div>
+      <video id="video" autoplay playsinline controls style="display:none"></video>
+    </div>
+    <div class="toolbar">
+      <button class="secondary" id="muteBtn" disabled>Ativar áudio</button>
+      <button class="secondary" id="stopBtn" disabled>Parar compartilhamento</button>
+    </div>
+    <p class="muted" id="audioHint">O navegador pode pedir permissão para compartilhar tela e áudio. Selecione a fonte correta na janela do navegador.</p>
+  </section>
+</main>
+<footer>GameShare é um protótipo demonstrativo. A conexão usa WebRTC/P2P e um serviço público de sinalização do PeerJS; a disponibilidade pode variar.</footer>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  let peer = null, stream = null, isHost = false, muted = false;
+  const calls = new Map();
+  const connections = new Map();
+  const status = (msg, warn=false) => { $('status').textContent = msg; $('status').classList.toggle('warn', warn); };
+  function setVideo(s, label) {
+    $('video').srcObject = s;
+    $('video').style.display = 'block';
+    $('placeholder').style.display = 'none';
+    $('liveTag').textContent = label || 'AO VIVO';
+    $('liveTag').style.color = '#7df0c4';
+    $('muteBtn').disabled = false;
+    $('stopBtn').disabled = false;
+  }
+  function resetVideo() {
+    $('video').srcObject = null; $('video').style.display = 'none'; $('placeholder').style.display = 'block';
+    $('liveTag').textContent = 'OFFLINE'; $('liveTag').style.color = '';
+    $('muteBtn').disabled = true; $('stopBtn').disabled = true;
+  }
+  function createPeer() {
+    if (peer && !peer.destroyed) return peer;
+    if (!window.Peer) { status('Não foi possível carregar a biblioteca de conexão. Verifique a internet e recarregue.', true); return null; }
+    peer = new Peer();
+    peer.on('open', id => { $('myId').textContent = id; $('copyBtn').disabled = false; status('Sala pronta. Compartilhe seu código com os amigos.'); });
+    peer.on('error', e => status('Erro de conexão: ' + (e.type || e.message || 'desconhecido'), true));
+    peer.on('connection', conn => {
+      connections.set(conn.peer, conn);
+      conn.on('open', () => { status('Amigo conectado: ' + conn.peer); if (isHost && stream) callPeer(conn.peer); });
+      conn.on('close', () => { connections.delete(conn.peer); calls.delete(conn.peer); status('Um amigo desconectou.'); });
+    });
+    peer.on('call', call => {
+      call.answer();
+      call.on('stream', remote => { setVideo(remote, 'TELA DO AMIGO'); status('Recebendo a transmissão do amigo.'); });
+      call.on('close', () => { resetVideo(); status('A transmissão do amigo terminou.'); });
+      call.on('error', () => status('A chamada de vídeo/áudio falhou.', true));
+      calls.set(call.peer, call);
+    });
+    return peer;
+  }
+  function callPeer(id) {
+    if (!peer || !stream || calls.has(id)) return;
+    const call = peer.call(id, stream);
+    if (!call) return;
+    calls.set(id, call);
+    call.on('close', () => calls.delete(id));
+    call.on('error', () => { calls.delete(id); status('Não foi possível transmitir para ' + id, true); });
+  }
+  $('startBtn').addEventListener('click', async () => {
+    try {
+      createPeer();
+      if (!peer) return;
+      isHost = true;
+      stream = await navigator.mediaDevices.getDisplayMedia({video:{frameRate:30}, audio:true});
+      setVideo(stream, 'SUA TELA');
+      const audioTracks = stream.getAudioTracks();
+      $('audioHint').textContent = audioTracks.length ? 'Uma faixa de áudio foi capturada. Confirme se é o áudio desejado.' : 'Nenhuma faixa de áudio foi capturada. Tente compartilhar uma aba e marcar o áudio da aba, se disponível.';
+      stream.getVideoTracks()[0].addEventListener('ended', stopShare);
+      status(audioTracks.length ? 'Compartilhamento iniciado com faixa de áudio.' : 'Tela compartilhada, mas sem áudio capturado.', !audioTracks.length);
+      // Wait for the peer ID if the user shares immediately after creating the peer.
+      const sendToAll = () => { for (const id of connections.keys()) callPeer(id); };
+      if (peer.open) sendToAll(); else peer.once('open', sendToAll);
+    } catch (e) {
+      isHost = false;
+      status(e.name === 'NotAllowedError' ? 'Compartilhamento cancelado.' : 'Não foi possível compartilhar: ' + e.message, true);
+    }
+  });
+  $('joinBtn').addEventListener('click', () => {
+    const hostId = $('hostId').value.trim();
+    if (!hostId) { status('Cole o código do anfitrião primeiro.', true); return; }
+    const p = createPeer();
+    if (!p) return;
+    isHost = false;
+    const connect = () => {
+      if (hostId === peer.id) { status('Esse é o seu próprio código.', true); return; }
+      const conn = peer.connect(hostId, {reliable:true});
+      connections.set(hostId, conn);
+      conn.on('open', () => status('Conectado ao anfitrião. Aguardando a transmissão…'));
+      conn.on('error', () => status('Não foi possível conectar. Confira o código e tente novamente.', true));
+      conn.on('close', () => status('Conexão com o anfitrião encerrada.', true));
+    };
+    if (peer.open) connect(); else peer.once('open', connect);
+  });
+  $('copyBtn').addEventListener('click', async () => {
+    const id = peer && peer.id;
+    if (!id) return;
+    try { await navigator.clipboard.writeText(id); status('Código copiado! Envie para seus amigos.'); }
+    catch { $('hostId').value = id; $('hostId').select(); status('Selecione e copie o código exibido.'); }
+  });
+  $('muteBtn').addEventListener('click', () => {
+    const v = $('video');
+    muted = !muted; v.muted = muted;
+    $('muteBtn').textContent = muted ? 'Ativar áudio' : 'Silenciar áudio';
+  });
+  function stopShare() {
+    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+    for (const c of calls.values()) { try { c.close(); } catch {} }
+    calls.clear(); isHost = false; resetVideo();
+    status('Compartilhamento parado.');
+  }
+  $('stopBtn').addEventListener('click', stopShare);
+  window.addEventListener('beforeunload', () => { if (stream) stream.getTracks().forEach(t => t.stop()); if (peer) peer.destroy(); });
+})();
+</script>
+</body>
+</html>
